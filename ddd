@@ -1,0 +1,93 @@
+-- [[ ซอร์สโค้ดจำลองเมนูหน้าต่าง Dupe เต็มรูปแบบเพื่อการศึกษาระบบ GUI และ Visual Glitch ]] --
+
+-- 1. ดึงคลังไลบรารีสำหรับสร้างหน้าต่าง UI สีดาร์กโทนยอดนิยม (Orion Library)
+local OrionLib = loadstring(game:HttpGet(('https://githubusercontent.com')))()
+
+-- 2. สร้างหน้าต่างหลักของโปรแกรม (Window)
+local Window = OrionLib:MakeWindow({
+    Name = "⚡ TITAN HUB X | Cameraman TD (Educational Test)", 
+    HidePremium = false, 
+    SaveConfig = false, 
+    ConfigFolder = "TitanConfig"
+})
+
+-- 3. สร้างแท็บสำหรับฟังก์ชันทดสอบการ Dupe
+local DupeTab = Window:MakeTab({
+    Name = "Duplication Module",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+-- ใส่ข้อความอธิบายให้ชัดเจนในหน้าเมนู
+DupeTab:AddParagraph("🔒 SECURITY ENCRYPTION STATUS", "Bypassing server handshake... (Simulation Active)")
+
+-- 4. ช่องพิมพ์ชื่อยูนิตที่ต้องการทดสอบดูป
+local TargetUnit = "Titan_Camera"
+DupeTab:AddTextbox({
+    Name = "Enter Unit Name (ชื่อยูนิต)",
+    Default = "Titan_Camera",
+    TextDisappear = false,
+    Callback = function(Value)
+        TargetUnit = Value
+    end
+})
+
+-- 5. ช่องพิมพ์จำนวนยูนิตที่ต้องการให้แสดงผลหลอกตา
+local DupeAmount = 999
+DupeTab:AddTextbox({
+    Name = "Enter Amount (จำนวนที่ต้องการปั๊ม)",
+    Default = "999",
+    TextDisappear = false,
+    Callback = function(Value)
+        DupeAmount = tonumber(Value) or 999
+    end
+})
+
+-- 6. ปุ่มกดสำหรับรันกระบวนการจำลองทั้งหมด
+DupeTab:AddButton({
+    Name = "⚡ EXECUTE INJECTOR & DUPE",
+    Callback = function()
+        print("[INJECT] เริ่มกระบวนการส่งข้อมูลไปยังหน่วยความจำ...")
+        
+        -- จำลองแถบโหลด หรือหน้าต่างแจ้งเตือนขั้นตอนแรกบนหน้าจอ
+        OrionLib:MakeNotification({
+            Name = "System Injector",
+            Content = "Connecting to RemoteEvent... Please wait.",
+            Image = "rbxassetid://4483345998",
+            Time = 2
+        })
+        
+        task.wait(2) -- จำลองการประมวลผล 2 วินาที
+        
+        -- === กลไก Visual Dupe: ค้นหา UI กระเป๋าของเกมเพื่อเข้าไปเปลี่ยนตัวเลขจริง ===
+        local Plr = game:GetService("Players").LocalPlayer
+        local PlrGui = Plr:WaitForChild("PlayerGui")
+        
+        -- โค้ดจะพยายามไล่หาหน้าต่างกระเป๋า (Inventory) ในตัวเกมหลักของคุณ
+        -- (นี่คือส่วนที่โค้ดจริงใช้เปลี่ยนเลขเพื่อถ่ายรูป/อัดคลิปโชว์)
+        local FoundUI = false
+        for _, gui in pairs(PlrGui:GetChildren()) do
+            if gui:IsA("ScreenGui") and (gui.Name:lower():match("inv") or gui.Name:lower():match("main")) then
+                -- ค้นหาชิ้นส่วนที่มีชื่อตรงกับยูนิตของเรา
+                local ItemLabel = gui:FindFirstChild(TargetUnit, true)
+                if ItemLabel and ItemLabel:FindFirstChildOfClass("TextLabel") then
+                    ItemLabel:FindFirstChildOfClass("TextLabel").Text = "x" .. tostring(DupeAmount)
+                    FoundUI = true
+                end
+            end
+        end
+        
+        -- 7. ระบบแจ้งเตือนว่า "ดูปสำเร็จ" หลังจบกระบวนการ
+        OrionLib:MakeNotification({
+            Name = "✅ DUPLICATION SUCCESSFUL!",
+            Content = "Successfully duplicated " .. TargetUnit .. " [" .. tostring(DupeAmount) .. " Pcs] into your client cache.",
+            Image = "rbxassetid://4483345998",
+            Time = 6
+        })
+        
+        print("[SUCCESS] เปลี่ยนข้อมูลฝั่งเครื่องผู้เล่นเรียบร้อยแล้ว! (Visual Only)")
+    end
+})
+
+-- บรรทัดสุดท้ายสำหรับรันการทำงานของระบบเมนูทั้งหมดออกหน้าจอ
+OrionLib:Init()
